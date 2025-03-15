@@ -1,8 +1,0 @@
-spring:
-  profiles:
-    active: prod
-  application:
-    name: Gestao_Espaco_Fisico
-
-server:
-  port: 8000
