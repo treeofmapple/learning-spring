@@ -7,15 +7,17 @@ import org.springframework.data.jpa.repository.Modifying;
 
 import com.tom.first.username.model.Username;
 
-public interface UsernameRepository extends JpaRepository<Username, Long>{
+public interface UsernameRepository extends JpaRepository<Username, Long> {
 
 	boolean existsByEmail(String email);
+
 	boolean existsByName(String name);
-	
+
 	@Modifying
 	void deleteByName(String name);
-	
+
 	Optional<Username> findOptionalByName(String name);
+
 	Username findByName(String name);
-	
+
 }

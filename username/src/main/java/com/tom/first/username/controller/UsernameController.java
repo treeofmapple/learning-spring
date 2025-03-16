@@ -48,25 +48,25 @@ public class UsernameController {
 	@PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Long> createUsername(@RequestBody @Valid UsernameRequest request){
 		Long id = service.createUsername(request);
-		return ResponseEntity.status(HttpStatus.OK).body(id);
+		return ResponseEntity.status(HttpStatus.CREATED).body(id);
 	}
 	
 	@PutMapping(value = "/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<UsernameResponse> updateUsername(@RequestParam @Valid Long id, @RequestBody @Valid UsernameRequest request){
 		var response = service.updateUsername(id, request);
-		return ResponseEntity.status(HttpStatus.OK).body(response);
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
 	}
 
 	@DeleteMapping(value = "/delete/{id}")
 	public ResponseEntity<String> deleteUsernameById(@PathVariable("id") Long userId){
 		service.deleteUsernameById(userId);
-		return ResponseEntity.status(HttpStatus.OK).body("User deleted");
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).body("User deleted");
 	}
 	
 	@DeleteMapping(value = "/delete", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> deleteUsernameByName(@RequestBody @Valid NameRequest name){
 		service.deleteUsernameByName(name);
-		return ResponseEntity.status(HttpStatus.OK).body("User deleted");
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).body("User deleted");
 	}
 	
 }
