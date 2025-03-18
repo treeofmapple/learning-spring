@@ -13,21 +13,27 @@
 	<version>v1</version>
 	<name>Library</name>
 	<description>library</description>
-	<url/>
+
 	<licenses>
-		<license/>
+		<license>
+			<name>BSD 2-Clause License</name>
+			<url>https://opensource.org/license/bsd-2-clause</url>
+			<distribution>repo</distribution>
+		</license>
 	</licenses>
+	
 	<developers>
-		<developer/>
+		<developer>
+			<name>Samuel</name>
+			<url>https://github.com/treeofmapple</url>
+			<organization>Comical Ferret</organization>
+			<organizationUrl>https://github.com/Pato-Incomum</organizationUrl>
+		</developer>
 	</developers>
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
+
 	<properties>
 		<java.version>21</java.version>
+		<spring.doc>2.8.3</spring.doc>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -42,7 +48,17 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-
+		
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>${spring.doc}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>

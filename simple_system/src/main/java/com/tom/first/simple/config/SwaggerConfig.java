@@ -1,4 +1,4 @@
-package com.tom.first.simple.configuration;
+package com.tom.first.simple.config;
 
 import org.springframework.context.annotation.Configuration;
 
