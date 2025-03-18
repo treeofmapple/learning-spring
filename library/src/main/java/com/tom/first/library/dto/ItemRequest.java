@@ -10,7 +10,6 @@ public record ItemRequest(
 		@NotBlank(message = "Username name can't be empty")
 		String username
 		
-		
 ) {
 
 }

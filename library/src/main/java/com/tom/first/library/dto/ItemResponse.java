@@ -20,17 +20,16 @@ public record ItemResponse(
 		
 ) {
 
-	public record BookDTO(String title) {
-		public BookDTO(Book book) {
-			this(book.getTitle());
-		}
-	}
-	
-	
-	public record UserDTO(String username) {
-		public UserDTO(User user) {
-			this(user.getUsername());
-		}
-	}
+    public record BookDTO(String title) {
+        public BookDTO(Book book) {
+            this(book != null ? book.getTitle() : null);
+        }
+    }
+
+    public record UserDTO(String username) {
+        public UserDTO(User user) {
+            this(user != null ? user.getUsername() : null);
+        }
+    }
 	
 }

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.PastOrPresent;
 
 public record BookRequest(
         
@@ -25,4 +26,34 @@ public record BookRequest(
         
 ) {
 
+	public record TitleRequest(
+			
+        @NotBlank(message = "Title cannot be empty")
+        String title
+			
+	) {
+	}
+	
+	
+	public record AuthorRequest(
+			
+		@NotBlank(message = "Author cannot be empty")
+        String author	
+			
+	) {
+	}
+	
+	public record YearRangeRequest(
+
+		@NotBlank(message = "FirstDate cannot be empty")
+		@PastOrPresent(message = "Can't find books into future")
+        LocalDate firstDate,
+		
+        @NotBlank(message = "LastDate cannot be empty")
+		@PastOrPresent(message = "Can't find books into future")
+		LocalDate lastDate
+	) {
+	}
+	
+	
 }

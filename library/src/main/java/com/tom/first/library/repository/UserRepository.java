@@ -1,5 +1,6 @@
 package com.tom.first.library.repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -14,14 +15,14 @@ import jakarta.transaction.Transactional;
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
 
-	boolean existsByName(String name);
-
 	boolean existsByEmail(String email);
 
     @Modifying
     @Transactional
-	void deleteByName(String name);
+	void deleteByEmail(String name);
 
-	Optional<User> findByName(String name);
+	List<User> findByName(String name);
+	
+	Optional<User> findByEmail(String email);
 
 }

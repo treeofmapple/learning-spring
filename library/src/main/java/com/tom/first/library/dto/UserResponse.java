@@ -20,6 +20,13 @@ public record UserResponse(
 		UserBookItems book
 
 ) {
+	
+	public record UserUpdateResponse(
+		String username, 
+		String email, 
+		int age) {
+	}
+	
 	public record UserBookItems(List<BookItemSummary> items) {
 		public static UserBookItems fromBookItems(List<BookItem> bookItems) {
 			if (bookItems == null) {
@@ -32,6 +39,7 @@ public record UserResponse(
 
 			return new UserBookItems(summaries);
 		}
+		
 	}
 
 	public record BookItemSummary(String title, LocalDate rentStart, LocalDate rentEnd) {

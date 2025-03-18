@@ -32,7 +32,7 @@ public class User extends Auditable {
 	@Column(name= "username", nullable = false, unique = false, updatable = true)
 	private String username;
 	
-	@Column(name= "email", nullable = true, unique = true, updatable = true)
+	@Column(name= "email", nullable = false, unique = true, updatable = true)
 	private String email;
 	
 	@Column(name= "password", nullable = false, unique = false, updatable = true)

@@ -17,12 +17,22 @@ public record BookResponse(
 		
 		LocalDateTime createdDate
 		
-		
-		
-		
-		
-		
 
 ) {
 
+	public record BookUpdateResponse(
+
+		String title,
+		
+		String author,
+		
+		int quantity,
+		
+		double price,
+		
+		LocalDate launchYear
+
+	) {
+	}
+	
 }

@@ -11,10 +11,11 @@ public record UserRequest(
         @NotBlank(message = "Username cannot be empty")
         String username,
         
+        @NotBlank(message = "Email cannot be empty")
         String email,
         
         @Size(min = 6, message = "Minimum character count is 6") 
-        @NotBlank(message = "Password cannot be null") 
+        @NotBlank(message = "Password cannot be empty") 
         String password,
         
         @Min(value = 5, message = "Minimum age is 5")
@@ -22,4 +23,32 @@ public record UserRequest(
         @NotNull(message = "Age cannot be null")
         int age
 ) {
+	public record NameRequest(
+		
+			@NotBlank(message = "Username cannot be empty")
+	        String username
+			
+			) {
+		
+	}
+	
+	public record EmailRequest(
+			
+			@NotBlank(message = "Email cannot be empty")
+			String email
+			
+			) {
+		
+	}
+	
+	public record PasswordRequest(
+			
+	        @Size(min = 6, message = "Minimum character count is 6") 
+	        @NotBlank(message = "Password cannot be empty") 
+	        String password
+			
+			) {
+	}
+	
 }
+

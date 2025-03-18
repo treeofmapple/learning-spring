@@ -9,7 +9,7 @@ import com.tom.first.library.model.BookItem;
 import com.tom.first.library.model.enums.Status;
 
 @Repository
-public interface BookItemRepository extends JpaRepository<BookItem, Long> {
+public interface ItemRepository extends JpaRepository<BookItem, Long> {
 
 	int countByUserIdAndBookIdAndStatus(UUID userId, Long bookId, Status Status);
 	
