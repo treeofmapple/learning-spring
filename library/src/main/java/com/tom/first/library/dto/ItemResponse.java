@@ -32,4 +32,17 @@ public record ItemResponse(
         }
     }
 	
+    public record ItemBookResponse(
+    		
+    		BookDTO book,
+    		
+    		UserDTO user,
+    		
+    		Status status
+    		
+    ) {
+    	
+    }
+    
+    
 }

@@ -62,13 +62,13 @@ public class BookController {
 	
 	@PutMapping(value = "/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<BookUpdateResponse> updateBook(@RequestParam @Valid TitleRequest title, @RequestBody @Valid BookRequest request) {
-		return ResponseEntity.status(HttpStatus.OK).body(service.updateBook(title, request));
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(service.updateBook(title, request));
 	}
 	
 	@DeleteMapping(value = "/delete", produces = MediaType.TEXT_PLAIN_VALUE)
 	public ResponseEntity<String> deleteBookByTitle(@RequestParam @Valid TitleRequest request) {
 		service.deleteBookByTitle(request);
-		return ResponseEntity.status(HttpStatus.OK).body(String.format("Deleting book: %s", request.title()));
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).body(String.format("Deleting book: %s", request.title()));
 	}
 	
 }

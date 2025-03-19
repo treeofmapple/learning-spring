@@ -6,6 +6,7 @@ import com.tom.first.library.dto.BookRequest;
 import com.tom.first.library.dto.BookResponse;
 import com.tom.first.library.dto.BookResponse.BookUpdateResponse;
 import com.tom.first.library.dto.ItemResponse;
+import com.tom.first.library.dto.ItemResponse.ItemBookResponse;
 import com.tom.first.library.model.Book;
 import com.tom.first.library.model.BookItem;
 import com.tom.first.library.model.User;
@@ -68,4 +69,13 @@ public class BookMapper {
 				);
 	}
 
+	public ItemBookResponse fromBookItemUser(BookItem item) {
+		return new ItemBookResponse(
+				new ItemResponse.BookDTO(item.getBook()), 
+				new ItemResponse.UserDTO(item.getUser()),
+				item.getStatus()
+				);
+	}
+
+	
 }

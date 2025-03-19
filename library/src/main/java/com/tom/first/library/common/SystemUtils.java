@@ -4,6 +4,7 @@ import com.tom.first.library.dto.BookRequest;
 import com.tom.first.library.dto.UserRequest;
 import com.tom.first.library.dto.UserRequest.PasswordRequest;
 import com.tom.first.library.model.Book;
+import com.tom.first.library.model.BookItem;
 import com.tom.first.library.model.User;
 
 public class SystemUtils {
@@ -31,4 +32,9 @@ public class SystemUtils {
 		book.setLaunchYear(request.launchYear());
 	}
 
+	protected void mergeItem(BookItem item, User user, Book book) {
+		item.setBook(book);
+		item.setUser(user);
+	}
+	
 }

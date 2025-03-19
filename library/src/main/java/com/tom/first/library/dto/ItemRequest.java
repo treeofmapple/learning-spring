@@ -11,5 +11,14 @@ public record ItemRequest(
 		String username
 		
 ) {
-
+	
+	public record bookItemRequest(
+	
+		@NotBlank(message = "Book name can't be empty")
+		String bookName
+			
+	) {
+		
+	}
+	
 }
