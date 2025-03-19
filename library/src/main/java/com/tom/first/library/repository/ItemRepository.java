@@ -1,5 +1,6 @@
 package com.tom.first.library.repository;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,5 +13,7 @@ import com.tom.first.library.model.enums.Status;
 public interface ItemRepository extends JpaRepository<BookItem, Long> {
 
 	int countByUserIdAndBookIdAndStatus(UUID userId, Long bookId, Status Status);
+	
+	List<BookItem> findByUser(UUID userId);
 	
 }

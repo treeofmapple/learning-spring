@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.tom.first.library.exception.AlreadyExistsException;
+import com.tom.first.library.exception.LimitException;
 import com.tom.first.library.exception.NotFoundException;
 
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +28,12 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<String> handleDuplicatedException(RuntimeException exp) {
 		log.error("Error during data processing", exp);
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(((CustomGlobalException) exp).getMsg());
+	}
+	
+	@ExceptionHandler({ LimitException.class })
+	public ResponseEntity<String> handleLimitException(RuntimeException exp) {
+		log.error("Error during data processing", exp);
+		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(((CustomGlobalException) exp).getMsg());
 	}
 	
 	@ExceptionHandler(MethodArgumentNotValidException.class)

@@ -1,5 +1,7 @@
 package com.tom.first.library.common;
 
+import java.time.LocalDate;
+
 import com.tom.first.library.dto.BookRequest;
 import com.tom.first.library.dto.UserRequest;
 import com.tom.first.library.dto.UserRequest.PasswordRequest;
@@ -37,4 +39,8 @@ public class SystemUtils {
 		item.setUser(user);
 	}
 	
+	protected void rentDate(BookItem itemBook) {
+		itemBook.setRentStart(LocalDate.now());
+		itemBook.setRentEnd(LocalDate.now().plusDays(30));
+	}
 }

@@ -18,6 +18,7 @@ import com.tom.first.library.mapper.BookMapper;
 import com.tom.first.library.model.Book;
 import com.tom.first.library.repository.BookRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -55,7 +56,8 @@ public class BookService extends SystemUtils {
 		}
 		return books.stream().map(mapper::fromBook).collect(Collectors.toList());
 	}
-
+	
+	@Transactional
 	public BookResponse createBook(BookRequest request) {
 		if(repository.existsByTitle(request.title())) {
 			throw new AlreadyExistsException
@@ -65,7 +67,8 @@ public class BookService extends SystemUtils {
 		var book = repository.save(mapper.toBooks(request));
 		return mapper.fromBook(book);
 	}
-
+	
+	@Transactional
 	public BookUpdateResponse updateBook(TitleRequest title, BookRequest request) {
 		var book = repository.findByTitle(request.title()).orElseThrow(
 				() -> new NotFoundException
@@ -74,7 +77,8 @@ public class BookService extends SystemUtils {
 		repository.save(book);
 		return mapper.fromUpdateResponse(book);
 	}
-
+	
+	@Transactional
 	public void deleteBookByTitle(TitleRequest request) {
 		if(!repository.existsByTitle(request.title())) {
 			throw new NotFoundException

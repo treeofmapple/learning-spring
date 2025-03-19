@@ -37,7 +37,7 @@ public class UserService extends SystemUtils {
 	}
 
 	public List<UserResponse> findByUsername(NameRequest request) {
-		List<User> users = repository.findByName(request.username());
+		List<User> users = repository.findAllByName(request.username());
 		if (users.isEmpty()) {
 			throw new NotFoundException
 			(String.format("No user with username %s found.", request.username()));
