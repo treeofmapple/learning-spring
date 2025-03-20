@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.tom.first.library.common.SystemUtils;
 import com.tom.first.library.dto.ItemRequest;
-import com.tom.first.library.dto.ItemRequest.bookItemRequest;
 import com.tom.first.library.dto.ItemResponse;
 import com.tom.first.library.dto.ItemResponse.ItemBookResponse;
 import com.tom.first.library.dto.UserRequest.NameRequest;
@@ -22,7 +21,6 @@ import com.tom.first.library.repository.BookRepository;
 import com.tom.first.library.repository.ItemRepository;
 import com.tom.first.library.repository.UserRepository;
 
-import br.tekk.system.library.exception.BookItemNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -31,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class ItemService extends SystemUtils {
 
 	@Value("${application.limit.books}")
-	private final static int MAX_BOOKS = 4;
+	private static int MAX_BOOKS;
 
 	private final ItemRepository itemRepository;
 	private final UserRepository userRepository;
@@ -47,7 +45,7 @@ public class ItemService extends SystemUtils {
 	}
 
 	public List<ItemBookResponse> findItemByUser(NameRequest request) {
-		User user = userRepository.findByName(request.username()).orElseThrow(
+		User user = userRepository.findByUsername(request.username()).orElseThrow(
 				() -> new NotFoundException(String.format("User with name %s was not found.", request.username())));
 
 		List<BookItem> items = itemRepository.findByUser(user.getId());
@@ -63,7 +61,7 @@ public class ItemService extends SystemUtils {
 		var book = bookRepository.findByTitle(request.bookName())
 				.orElseThrow(() -> new NotFoundException("Book not found with ID: " + request.bookName()));
 
-		var user = userRepository.findByName(request.username())
+		var user = userRepository.findByUsername(request.username())
 				.orElseThrow(() -> new NotFoundException("User not found with ID: " + request.username()));
 
 		if (itemRepository.countByUserIdAndBookIdAndStatus(user.getId(), book.getId(), Status.RENT) > MAX_BOOKS) {
@@ -77,28 +75,41 @@ public class ItemService extends SystemUtils {
 	}
 
 	@Transactional
-	public ItemBookResponse updateItem(bookItemRequest request) {
-		var itemBook = itemRepository.findByName(bookItemId).orElseThrow(() -> new BookItemNotFoundException(
-				String.format("Cannot update BookItem, no bookItem found with the provide ID:: %s", bookItemId)));
-		itemBook.setStatus(Status.AVAILABLE);
-		mergeItem(book, request);
+	public ItemBookResponse updateItem(ItemRequest request) {
+        var itemBook = itemRepository.findByBookName(request.bookName())
+                .orElseThrow(() -> new NotFoundException(
+                        String.format("Cannot update BookItem, no bookItem found with title: %s", request.bookName())));
+
+        itemBook.setStatus(Status.AVAILABLE);
+        itemRepository.save(itemBook);
+        return mapper.fromBookItemUser(itemBook);
+	}
+
+	@Transactional
+	public ItemBookResponse startRent(ItemRequest request) {
+        var itemBook = itemRepository.findByBookName(request.bookName())
+                .orElseThrow(() -> new NotFoundException("BookItem not found with title: " + request.bookName()));
+
+        itemBook.setStatus(Status.RENT);
+        rentDate(itemBook);
+        itemRepository.save(itemBook);
+        return mapper.fromBookItemUser(itemBook);
+	}
+
+	@Transactional
+	public void deleteItem(ItemRequest request) {
 		
-		bookItemRepository.save(book);
-	}
+        var user = userRepository.findByUsername(request.username())
+                .orElseThrow(() -> new NotFoundException("User not found with username: " + request.username()));
 
-	@Transactional
-	public ItemBookResponse startRent(NameRequest name, bookItemRequest request) {
-		itemBook.setStatus(Status.RENT);
-		itemBook.set
-		return null;
-	}
+        var book = bookRepository.findByTitle(request.bookName())
+                .orElseThrow(() -> new NotFoundException("Book not found with title: " + request.bookName()));
 
-	@Transactional
-	public void deleteItem(NameRequest name, bookItemRequest request) {
-		if (!itemRepository.existsById(bookItemId)) {
-			throw new BookItemNotFoundException("Book not found with ID:: " + bookItemId);
-		}
-		itemRepository.deleteById(bookItemId);
+        if (!itemRepository.existsByBookAndUser(book, user)) {
+            throw new NotFoundException("BookItem not found for user: " + request.username());
+        }
+
+        itemRepository.deleteByBookAndUser(book, user);
 	}
 
 }

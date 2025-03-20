@@ -12,13 +12,4 @@ public record ItemRequest(
 		
 ) {
 	
-	public record bookItemRequest(
-	
-		@NotBlank(message = "Book name can't be empty")
-		String bookName
-			
-	) {
-		
-	}
-	
 }

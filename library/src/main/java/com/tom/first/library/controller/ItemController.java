@@ -11,11 +11,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tom.first.library.dto.ItemRequest;
-import com.tom.first.library.dto.ItemRequest.bookItemRequest;
 import com.tom.first.library.dto.ItemResponse;
 import com.tom.first.library.dto.ItemResponse.ItemBookResponse;
 import com.tom.first.library.dto.UserRequest.NameRequest;
@@ -47,23 +45,21 @@ public class ItemController {
 	}
 	
 	@PutMapping(value = "/update", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ItemBookResponse> updateItem(@RequestParam NameRequest name, @RequestParam bookItemRequest request) {
-		service.updateItem(name, request);
+	public ResponseEntity<ItemBookResponse> updateItem(@RequestBody @Valid ItemRequest request) {
+		service.updateItem(request);
 		return ResponseEntity.status(HttpStatus.ACCEPTED).build();
 	}
 	
 	@PutMapping(value = "/rent/start", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ItemBookResponse> startItemRent(@RequestParam NameRequest name, @RequestParam bookItemRequest request) {
-		service.startRent(name, request);
+	public ResponseEntity<ItemBookResponse> startItemRent(@RequestBody @Valid ItemRequest request) {
+		service.startRent(request);
 		return ResponseEntity.status(HttpStatus.ACCEPTED).build();
 	}
 	
 	@DeleteMapping(value = "/delete", produces = MediaType.TEXT_PLAIN_VALUE)
-	public ResponseEntity<Void> deleteItem(@RequestParam NameRequest name, @RequestParam bookItemRequest request) {
-		service.deleteItem(name, request);
+	public ResponseEntity<Void> deleteItem(@RequestBody @Valid ItemRequest request) {
+		service.deleteItem(request);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
-	
-	
 	
 }
