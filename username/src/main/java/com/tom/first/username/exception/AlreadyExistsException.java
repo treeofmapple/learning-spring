@@ -6,8 +6,8 @@ import lombok.EqualsAndHashCode;
 @SuppressWarnings("serial")
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class UserNotFoundException extends RuntimeException {
+public class AlreadyExistsException extends RuntimeException {
 
 	private final String msg;
-	
+
 }
