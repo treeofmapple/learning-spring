@@ -11,7 +11,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SystemFunctions {
 
-	protected static void mergeData(Username username, UsernameRequest request) {
+	public void mergeData(Username username, UsernameRequest request) {
 		username.setName(request.name());
 		username.setPassword(request.password());
 		username.setEmail(request.email());

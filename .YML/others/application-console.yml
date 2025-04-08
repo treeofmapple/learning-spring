@@ -2,26 +2,12 @@ spring:
   output:
     ansi:
       enabled: always
+  aop:
+    auto: true # When you don't need logging.
   banner:
     location: classpath:banner/banner.txt
   main:
     banner-mode: console
-
-  profiles:
-    active: dev
-  application:
-    name: space_management
-
-springdoc:
-  api-docs:
-    enabled: true
-  swagger-ui:
-    enabled: true
-    path: /docs
-
-server:
-  port: 8000
-
 logging:
   level:
     root: info

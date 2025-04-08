@@ -20,8 +20,9 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class UsernameService extends SystemFunctions {
+public class UsernameService {
 
+	private final SystemFunctions system; 
 	private final UsernameRepository repository;
 	private final UsernameMapper mapper;
 
@@ -62,7 +63,7 @@ public class UsernameService extends SystemFunctions {
 		}
 		var user = repository.findById(id).orElseThrow(
 				() -> new NotFoundException(String.format("User with name %s, was not found", request.name())));
-		mergeData(user, request);
+		system.mergeData(user, request);
 		repository.save(user);
 		return mapper.fromUsername(user);
 	}
