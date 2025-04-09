@@ -1,5 +1,9 @@
 package com.tom.first.management.repository;
 
-public interface AuditRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.tom.first.management.model.Audit;
+
+public interface AuditRepository extends JpaRepository<Audit, Long> {
 
 }

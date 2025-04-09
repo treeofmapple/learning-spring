@@ -1,4 +1,6 @@
-package com.tom.first.management.exception.global;
+package com.tom.first.management.exception;
+
+import com.tom.first.management.exception.global.CustomGlobalException;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

@@ -1,4 +1,4 @@
-INSERT INTO Usuarios (nome, email)
+INSERT INTO users (name, email)
 VALUES
     ('Alice Silva', 'alice.silva@example.com'),
     ('Bruno Costa', 'bruno.costa@example.com'),
@@ -11,7 +11,7 @@ VALUES
     ('Isabela Farias', 'isabela.farias@example.com'),
     ('João Mendes', 'joao.mendes@example.com');
 
-INSERT INTO Perfis (id_usuario, perfil)
+INSERT INTO profile (id_user, profile)
 VALUES
     (1, 'PROFESSOR'), 
     (1, 'GESTOR'),    
@@ -27,7 +27,7 @@ VALUES
     (9, 'PROFESSOR'), 
     (10, 'PROFESSOR'); 
     
-INSERT INTO Feriados (nome, data)
+INSERT INTO holiday (name, date_holiday)
 VALUES
     ('Ano Novo', '2024-01-01'),
     ('Carnaval', '2024-02-12'),
@@ -39,7 +39,7 @@ VALUES
     ('Proclamação da República', '2024-11-15'),
     ('Natal', '2024-12-25');
 	
-INSERT INTO Equipamentos (nome)
+INSERT INTO equipament (name)
 VALUES
     ('Projetor Multimídia'),
     ('Notebook Dell'),
@@ -88,29 +88,29 @@ VALUES
     ('Câmera de Ação');
 
 
-INSERT INTO Espacos_fisicos (nome, tipo, metragem, disponibilidade)
+INSERT INTO physical_space (name, type_space, size_space, availability)
 VALUES
-    ('Laboratório de Química', 'Laboratório', 45.00, 'DISPONIVEL'),
-    ('Sala de Aula 103', 'Sala', 42.00, 'DISPONIVEL'),
-    ('Auditório Secundário', 'Auditório', 100.00, 'DISPONIVEL'),
-    ('Área de Convivência', 'Espaço Comum', 200.00, 'DISPONIVEL'),
-    ('Oficina de Manutenção', 'Oficina', 70.00, 'DISPONIVEL'),
-    ('Salão de Eventos', 'Salão', 250.00, 'DISPONIVEL'),
-    ('Estúdio de Gravação', 'Estúdio', 35.00, 'DISPONIVEL'),
-    ('Sala de Videoconferência', 'Sala', 28.00, 'DISPONIVEL'),
-    ('Laboratório de Física', 'Laboratório', 55.00, 'DISPONIVEL'),
-    ('Terraço Aberto', 'Espaço Externo', 400.00, 'DISPONIVEL'),
-    ('Centro de Treinamento', 'Centro', 150.00, 'DISPONIVEL'),
-    ('Depósito de Equipamentos', 'Depósito', 60.00, 'DISPONIVEL'),
-    ('Garagem Subterrânea', 'Área Externa', 600.00, 'DISPONIVEL'),
-    ('Piscina Aquecida', 'Área de Lazer', 300.00, 'DISPONIVEL'),
-    ('Sala de Jogos', 'Espaço de Lazer', 80.00, 'DISPONIVEL'),
-    ('Sala de Aula 104', 'Sala', 38.00, 'DISPONIVEL'),
-    ('Sala de Treinamento Avançado', 'Sala', 70.00, 'DISPONIVEL'),
-    ('Jardim Interno', 'Espaço Externo', 180.00, 'DISPONIVEL'),
-    ('Cantina', 'Espaço Comum', 90.00, 'INDISPONIVEL');
+	('Laboratório de Química', 'Laboratório', 45.00, 'AVAILABLE'),
+	('Sala de Aula 103', 'Sala', 42.00, 'AVAILABLE'),
+	('Auditório Secundário', 'Auditório', 100.00, 'AVAILABLE'),
+	('Área de Convivência', 'Espaço Comum', 200.00, 'AVAILABLE'),
+	('Oficina de Manutenção', 'Oficina', 70.00, 'AVAILABLE'),
+	('Salão de Eventos', 'Salão', 250.00, 'AVAILABLE'),
+	('Estúdio de Gravação', 'Estúdio', 35.00, 'AVAILABLE'),
+	('Sala de Videoconferência', 'Sala', 28.00, 'AVAILABLE'),
+	('Laboratório de Física', 'Laboratório', 55.00, 'AVAILABLE'),
+	('Terraço Aberto', 'Espaço Externo', 400.00, 'AVAILABLE'),
+	('Centro de Treinamento', 'Centro', 150.00, 'AVAILABLE'),
+	('Depósito de Equipamentos', 'Depósito', 60.00, 'AVAILABLE'),
+	('Garagem Subterrânea', 'Área Externa', 600.00, 'AVAILABLE'),
+	('Piscina Aquecida', 'Área de Lazer', 300.00, 'AVAILABLE'),
+	('Sala de Jogos', 'Espaço de Lazer', 80.00, 'AVAILABLE'),
+	('Sala de Aula 104', 'Sala', 38.00, 'AVAILABLE'),
+	('Sala de Treinamento Avançado', 'Sala', 70.00, 'AVAILABLE'),
+	('Jardim Interno', 'Espaço Externo', 180.00, 'AVAILABLE'),
+	('Cantina', 'Espaço Comum', 90.00, 'UNAVAILABLE');
 
-INSERT INTO Espacos_Equipamentos (id, equipamento_id)
+INSERT INTO space_equipament (id, equipament_id)
 VALUES
     (1, 1), 
 	(1, 2), 

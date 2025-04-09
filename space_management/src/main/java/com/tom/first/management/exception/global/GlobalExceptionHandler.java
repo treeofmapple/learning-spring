@@ -9,17 +9,21 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import com.tom.first.management.exception.AlreadyExistsException;
+import com.tom.first.management.exception.CancelException;
+import com.tom.first.management.exception.DuplicateException;
+import com.tom.first.management.exception.InvalidDateException;
+import com.tom.first.management.exception.InvalidFormatDate;
+import com.tom.first.management.exception.NotAllowedException;
+import com.tom.first.management.exception.NotFoundException;
+import com.tom.first.management.exception.InternalException;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-	@ExceptionHandler({ NotFoundException.class, UnavailableException.class, })
+	@ExceptionHandler({ NotFoundException.class })
 	public ResponseEntity<String> handleNotFoundException(RuntimeException exp) {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(((CustomGlobalException) exp).getMsg());
-	}
-
-	@ExceptionHandler({ CancelException.class, NotAllowedException.class })
-	public ResponseEntity<String> handleNotAcceptableException(RuntimeException exp) {
-		return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(((CustomGlobalException) exp).getMsg());
 	}
 
 	@ExceptionHandler({ AlreadyExistsException.class, DuplicateException.class })
@@ -27,8 +31,13 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(((CustomGlobalException) exp).getMsg());
 	}
 
-	@ExceptionHandler({ InvalidFormatDate.class, InvalidDateException.class })
+	@ExceptionHandler({ InvalidDateException.class })
 	public ResponseEntity<String> handle(InvalidFormatDate exp) {
+		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(((CustomGlobalException) exp).getMsg());
+	}
+	
+	@ExceptionHandler({ InvalidDateException.class })
+	public ResponseEntity<String> handle( exp) {
 		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(((CustomGlobalException) exp).getMsg());
 	}
 

@@ -7,8 +7,9 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
-import br.gestao.espaco.model.Auditoria;
-import br.gestao.espaco.repository.AuditoriaRepository;
+import com.tom.first.management.model.Audit;
+import com.tom.first.management.repository.AuditRepository;
+
 import lombok.RequiredArgsConstructor;
 
 @Aspect
@@ -16,7 +17,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AuditConfig {
 
-	private final AuditoriaRepository auditoriaRepository;
+	private final AuditRepository auditoriaRepository;
 
 	@Pointcut("@annotation(logAuditoria)")
 	public void logAuditoriaPointcut(LogAuditoria logAuditoria) {
@@ -24,8 +25,8 @@ public class AuditConfig {
 
 	@AfterReturning(value = "logAuditoriaPointcut(logAuditoria)", argNames = "logAuditoria")
 	public void salvarAuditoria(LogAuditoria logAuditoria) {
-		var auditoria = Auditoria.builder().acao(logAuditoria.acao()).data(LocalDateTime.now())
-				.detalhes("Ação realizada automaticamente pelo aspecto.").build();
+		var auditoria = Audit.builder().action(logAuditoria.acao()).date(LocalDateTime.now())
+				.details("Ação realizada automaticamente pelo aspecto.").build();
 
 		auditoriaRepository.save(auditoria);
 	}

@@ -1,98 +1,96 @@
-CREATE TABLE Usuarios (
+CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
+    name VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL
 );
 
-CREATE TABLE Perfis (
-    id_usuario INT NOT NULL REFERENCES Usuarios(id) ON DELETE CASCADE,
-    perfil VARCHAR(50) NOT NULL,
-    PRIMARY KEY (id_usuario, perfil)
+CREATE TABLE profile (
+    id_user INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    profile VARCHAR(50) NOT NULL,
+    PRIMARY KEY (id_user, profile)
 );
 
-CREATE TABLE Espacos_fisicos (
+CREATE TABLE physical_space (
     id SERIAL PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    tipo VARCHAR(50) NOT NULL,
-    metragem NUMERIC(5, 2) NOT NULL,
-    disponibilidade VARCHAR(25) NOT NULL CHECK (disponibilidade IN ('DISPONIVEL', 'INDISPONIVEL'))
+    name VARCHAR(100) NOT NULL,
+    type_space VARCHAR(50) NOT NULL,
+    size_space NUMERIC(5, 2) NOT NULL,
+    availability VARCHAR(25) NOT NULL CHECK (availability IN ('AVAILABLE', 'UNAVAILABLE'))
 );
 
-CREATE TABLE Equipamentos (
+CREATE TABLE equipament (
     id SERIAL PRIMARY KEY,
-    nome VARCHAR(200) NOT NULL
+    name VARCHAR(200) NOT NULL
 );
 
-CREATE TABLE Espacos_Equipamentos (
-    id INT NOT NULL REFERENCES Espacos_fisicos(id) ON DELETE CASCADE,
-    equipamento_id INT NOT NULL REFERENCES Equipamentos(id) ON DELETE CASCADE,
-    PRIMARY KEY (id, equipamento_id)
+CREATE TABLE space_equipament (
+    id INT NOT NULL REFERENCES physical_space(id) ON DELETE CASCADE,
+    equipament_id INT NOT NULL REFERENCES equipament(id) ON DELETE CASCADE,
+    PRIMARY KEY (id, equipament_id)
 );
 
-CREATE TABLE Avaliador (
+CREATE TABLE evaluator (
     id SERIAL PRIMARY KEY,
-    id_avaliador INT NOT NULL REFERENCES Usuarios(id)
+    id_evaluator INT NOT NULL REFERENCES users(id)
 );
 
-CREATE TABLE Solicitacoes (
+CREATE TABLE solicitation (
     id SERIAL PRIMARY KEY,
-    id_espaco INT NOT NULL REFERENCES Espacos_Fisicos(id), 
-    id_solicitante INT NOT NULL REFERENCES Usuarios(id),
-	id_avaliador INT REFERENCES Avaliador(id),
-    nome VARCHAR(255) NOT NULL,
-    data_inicio TIMESTAMP NOT NULL,
-    data_fim TIMESTAMP NOT NULL,
-    hora_inicio TIME NOT NULL,
-    hora_fim TIME NOT NULL,
-	data_solicitacao TIMESTAMP NOT NULL,
-	data_avaliacao TIMESTAMP,
-    status VARCHAR(50) NOT NULL CHECK (status IN ('APROVADA', 'REJEITADA', 'PENDENTE')), 
-    justificativa TEXT
+    id_space INT NOT NULL REFERENCES physical_space(id), 
+    id_solicitator INT NOT NULL REFERENCES users(id),
+    id_evaluator INT REFERENCES evaluator(id),
+    name VARCHAR(255) NOT NULL,
+    date_start TIMESTAMP NOT NULL,
+    date_end TIMESTAMP NOT NULL,
+    hour_start TIME NOT NULL,
+    hour_end TIME NOT NULL,
+    date_solicitation TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    date_evaluation TIMESTAMP,
+    status VARCHAR(50) NOT NULL CHECK (status IN ('APPROVED', 'REJECTED', 'PENDING')), 
+    justification TEXT
 );
 
-CREATE TABLE Auditoria (
+CREATE TABLE audit (
     id SERIAL PRIMARY KEY,
-    id_usuario INT REFERENCES Usuarios(id),
-    acao VARCHAR(255) NOT NULL,
-    data TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    detalhes TEXT
+    id_user INT REFERENCES users(id),
+    actions VARCHAR(255) NOT NULL,
+    date_audit TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    details TEXT
 );
 
-CREATE TABLE Feriados (
+CREATE TABLE holiday (
     id SERIAL PRIMARY KEY,
-	nome VARCHAR(255) NOT NULL,
-    data DATE NOT NULL UNIQUE
+    name VARCHAR(255) NOT NULL,
+    date_holiday DATE NOT NULL UNIQUE
 );
 
-CREATE OR REPLACE FUNCTION processa_usuario_para_avaliador()
+CREATE OR REPLACE FUNCTION process_user_to_evaluator()
 RETURNS VOID AS $$
 DECLARE
-    usuario RECORD;
+    user_record RECORD;
 BEGIN
-    FOR usuario IN
-        SELECT p.id_usuario
-        FROM Perfis p
-        LEFT JOIN Avaliador a ON p.id_usuario = a.id_avaliador
-        WHERE p.perfil IN ('GESTOR', 'ADMINISTRADOR')
-          AND a.id_avaliador IS NULL
+    FOR user_record IN
+        SELECT p.id_user
+        FROM profile p
+        LEFT JOIN evaluator e ON p.id_user = e.id_evaluator
+        WHERE p.profile IN ('GESTOR', 'ADMINISTRADOR')
+          AND e.id_evaluator IS NULL
     LOOP
-        INSERT INTO Avaliador (id_avaliador)
-        VALUES (usuario.id_usuario);
+        INSERT INTO evaluator (id_evaluator)
+        VALUES (user_record.id_user);
     END LOOP;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION trigger_perfis_to_avaliador()
+CREATE OR REPLACE FUNCTION trigger_profile_to_evaluator()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF NEW.perfil IN ('GESTOR', 'ADMINISTRADOR') THEN
+    IF NEW.profile IN ('GESTOR', 'ADMINISTRADOR') THEN
         IF NOT EXISTS (
-            SELECT 1
-            FROM Avaliador
-            WHERE id_avaliador = NEW.id_usuario
+            SELECT 1 FROM evaluator WHERE id_evaluator = NEW.id_user
         ) THEN
-            INSERT INTO Avaliador (id_avaliador)
-            VALUES (NEW.id_usuario);
+            INSERT INTO evaluator (id_evaluator)
+            VALUES (NEW.id_user);
         END IF;
     END IF;
 
@@ -100,47 +98,45 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER after_perfil_insert
-AFTER INSERT OR UPDATE ON Perfis
+CREATE TRIGGER after_profile_insert
+AFTER INSERT OR UPDATE ON profile
 FOR EACH ROW
-EXECUTE FUNCTION trigger_perfis_to_avaliador();
+EXECUTE FUNCTION trigger_profile_to_evaluator();
 
-CREATE OR REPLACE FUNCTION verifica_sobreposicao()
+CREATE OR REPLACE FUNCTION check_overlap()
 RETURNS TRIGGER AS $$
 DECLARE
-    dia_semana INT;
-    data_hora_inicio TIMESTAMP;
-    data_hora_fim TIMESTAMP;
-    feriado DATE;
-    solicitacao RECORD;
+    weekday INT;
+    start_dt TIMESTAMP;
+    end_dt TIMESTAMP;
+    holiday_date DATE;
+    existing RECORD;
 BEGIN
-    data_hora_inicio := NEW.data_inicio + NEW.hora_inicio;
-    data_hora_fim := NEW.data_fim + NEW.hora_fim;
+    start_dt := NEW.date_start + NEW.hour_start;
+    end_dt := NEW.date_end + NEW.hour_end;
 
-    IF (EXTRACT(HOUR FROM data_hora_inicio) < 7 OR EXTRACT(HOUR FROM data_hora_fim) > 22) THEN
-        RAISE EXCEPTION 'Horário fora do intervalo permitido (07:00 - 22:00)';
-    END IF;
-    dia_semana := EXTRACT(DOW FROM data_hora_inicio);
-    IF dia_semana = 0 THEN
-        RAISE EXCEPTION 'Reservas não são permitidas aos domingos';
+    IF (EXTRACT(HOUR FROM start_dt) < 7 OR EXTRACT(HOUR FROM end_dt) > 22) THEN
+        RAISE EXCEPTION 'Time must be between 07:00 and 22:00';
     END IF;
 
-    FOR feriado IN
-        SELECT data FROM Feriados
-    LOOP
-        IF NEW.data_inicio::DATE = feriado THEN
-            RAISE EXCEPTION 'Reservas não são permitidas em feriados';
+    weekday := EXTRACT(DOW FROM start_dt);
+    IF weekday = 0 THEN
+        RAISE EXCEPTION 'Reservations are not allowed on Sundays';
+    END IF;
+
+    FOR holiday_date IN SELECT date_holiday FROM holiday LOOP
+        IF NEW.date_start::DATE = holiday_date THEN
+            RAISE EXCEPTION 'Reservations are not allowed on holidays';
         END IF;
     END LOOP;
 
-    FOR solicitacao IN
-        SELECT * 
-        FROM Solicitacoes
-        WHERE id_espaco = NEW.id_espaco
-          AND status = 'APROVADA'
+    FOR existing IN
+        SELECT * FROM solicitation
+        WHERE id_space = NEW.id_space AND status = 'APPROVED'
     LOOP
-        IF (solicitacao.data_inicio + solicitacao.hora_inicio, solicitacao.data_fim + solicitacao.hora_fim) OVERLAPS (data_hora_inicio, data_hora_fim) THEN
-            RAISE EXCEPTION 'Reserva sobreposta detectada!';
+        IF (existing.date_start + existing.hour_start, existing.date_end + existing.hour_end)
+           OVERLAPS (start_dt, end_dt) THEN
+            RAISE EXCEPTION 'Overlapping reservation detected!';
         END IF;
     END LOOP;
 
@@ -148,29 +144,30 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE OR REPLACE FUNCTION processa_avaliacao()
+CREATE TRIGGER trigger_check_overlap
+BEFORE INSERT OR UPDATE ON solicitation
+FOR EACH ROW
+EXECUTE FUNCTION check_overlap();
+
+CREATE OR REPLACE FUNCTION process_evaluation()
 RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO Auditoria (id_usuario, acao, detalhes, data)
+    INSERT INTO audit (id_user, actions, details, date_audit)
     VALUES (
-        NEW.id_avaliador, 
-        'Avaliou solicitação', 
-        'Solicitação ' || NEW.id || ' foi ' || NEW.status,
-        CURRENT_TIMESTAMP 
+        NEW.id_evaluator,
+        'Evaluated solicitation',
+        'Solicitation ' || NEW.id || ' was ' || NEW.status,
+        CURRENT_TIMESTAMP
     );
 
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER trigger_avaliar_solicitacao
-AFTER UPDATE OF status ON Solicitacoes
+CREATE TRIGGER trigger_process_evaluation
+AFTER UPDATE OF status ON solicitation
 FOR EACH ROW
-WHEN (NEW.status IN ('Aprovada', 'Rejeitada'))
-EXECUTE FUNCTION processa_avaliacao();
+WHEN (NEW.status IN ('APPROVED', 'REJECTED'))
+EXECUTE FUNCTION process_evaluation();
 
-CREATE TRIGGER trigger_sobreposicao
-BEFORE INSERT OR UPDATE ON Solicitacoes
-FOR EACH ROW
-EXECUTE FUNCTION verifica_sobreposicao();
 

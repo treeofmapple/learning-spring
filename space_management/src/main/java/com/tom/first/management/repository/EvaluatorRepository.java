@@ -1,5 +1,9 @@
 package com.tom.first.management.repository;
 
-public interface EvaluatorRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.tom.first.management.model.Evaluator;
+
+public interface EvaluatorRepository extends JpaRepository<Evaluator, Long> {
 
 }
