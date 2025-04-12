@@ -6,13 +6,13 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.tom.first.management.common.SystemFunctions;
+import com.tom.first.management.config.LogAuditoria;
+import com.tom.first.management.dto.UserResponse;
+import com.tom.first.management.exception.NotFoundException;
 import com.tom.first.management.mapper.UserMapper;
+import com.tom.first.management.model.User;
 import com.tom.first.management.repository.UserRepository;
 
-import br.gestao.espaco.config.LogAuditoria;
-import br.gestao.espaco.exception.NotFoundException;
-import br.gestao.espaco.model.Usuario;
-import br.gestao.espaco.request.UsuarioResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,8 +26,8 @@ public class UserService {
 	private final SystemFunctions functions;
 	
 	@LogAuditoria(acao = "FIND_ALL_USUARIO")
-	public List<UsuarioResponse> findAll() {
-		List<Usuario> usuarios = repository.findAll();
+	public List<UserResponse> findAll() {
+		List<User> usuarios = repository.findAll();
 		if (usuarios.isEmpty()) {
 			throw new NotFoundException(String.format("Nenhum usuario encontrado."));
 		}

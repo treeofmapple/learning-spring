@@ -1,5 +1,7 @@
 package com.tom.first.management.dto;
 
-public record HolidayResponse() {
+import java.time.LocalDate;
+
+public record HolidayResponse(String Name, LocalDate Date) {
 
 }

@@ -1,5 +1,5 @@
 package com.tom.first.management.dto;
 
-public record EquipamentResponse() {
+public record EquipamentResponse(String Name) {
 
 }

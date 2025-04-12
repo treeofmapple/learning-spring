@@ -35,15 +35,15 @@ public class Solicitation {
 
     @ManyToOne
     @JoinColumn(name = "id_space", nullable = false)
-    private PhysicalSpace espaco;
+    private PhysicalSpace space;
 
     @ManyToOne
     @JoinColumn(name = "id_solicitator", nullable = false)
-    private User solicitante;
+    private User solicitator;
     
     @ManyToOne
     @JoinColumn(name = "id_evaluator", nullable = true)
-    private Evaluator avaliador;
+    private Evaluator evaluator;
 
     @Column(nullable = false)
     private String name;

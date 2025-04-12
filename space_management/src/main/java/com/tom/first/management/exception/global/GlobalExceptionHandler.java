@@ -1,6 +1,8 @@
 package com.tom.first.management.exception.global;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,49 +12,64 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.tom.first.management.exception.AlreadyExistsException;
-import com.tom.first.management.exception.CancelException;
 import com.tom.first.management.exception.DuplicateException;
-import com.tom.first.management.exception.InvalidDateException;
-import com.tom.first.management.exception.InvalidFormatDate;
-import com.tom.first.management.exception.NotAllowedException;
-import com.tom.first.management.exception.NotFoundException;
 import com.tom.first.management.exception.InternalException;
+import com.tom.first.management.exception.InvalidDateException;
+import com.tom.first.management.exception.NotFoundException;
 
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
-	@ExceptionHandler({ NotFoundException.class })
-	public ResponseEntity<String> handleNotFoundException(RuntimeException exp) {
-		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(((CustomGlobalException) exp).getMsg());
-	}
+    @ExceptionHandler({ NotFoundException.class })
+    public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException exp, HttpServletRequest request) {
+        return buildErrorResponse(exp.getMsg(), HttpStatus.NOT_FOUND, request, null);
+    }
 
-	@ExceptionHandler({ AlreadyExistsException.class, DuplicateException.class })
-	public ResponseEntity<String> handleConflictException(RuntimeException exp) {
-		return ResponseEntity.status(HttpStatus.CONFLICT).body(((CustomGlobalException) exp).getMsg());
-	}
+    @ExceptionHandler({ AlreadyExistsException.class, DuplicateException.class })
+    public ResponseEntity<ErrorResponse> handleConflictException(RuntimeException exp, HttpServletRequest request) {
+        return buildErrorResponse(((CustomGlobalException) exp).getMsg(), HttpStatus.CONFLICT, request, null);
+    }
+    
+    @ExceptionHandler(InvalidDateException.class)
+    public ResponseEntity<ErrorResponse> handleDateException(NumberFormatException exp, HttpServletRequest request) {
+        return buildErrorResponse(((DateGlobalException) exp).getMsg(), HttpStatus.EXPECTATION_FAILED, request, null);
+    }
 
-	@ExceptionHandler({ InvalidDateException.class })
-	public ResponseEntity<String> handle(InvalidFormatDate exp) {
-		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(((CustomGlobalException) exp).getMsg());
+    @ExceptionHandler(InternalException.class)
+    public ResponseEntity<ErrorResponse> handleInternalException(InternalException exp, HttpServletRequest request) {
+        return buildErrorResponse(((CustomGlobalException) exp).getMsg(), HttpStatus.INTERNAL_SERVER_ERROR, request, null);
+    }
+	
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleValidation(MethodArgumentNotValidException exp, HttpServletRequest request) {
+        Map<String, String> validationErrors = new HashMap<>();
+        exp.getBindingResult().getAllErrors().forEach(error -> {
+            String fieldName = ((FieldError) error).getField();
+            String errorMessage = error.getDefaultMessage();
+            validationErrors.put(fieldName, errorMessage);
+        });
+
+        return buildErrorResponse("Validation failed for one or more fields", HttpStatus.BAD_REQUEST, request, validationErrors);
+    }
+
+	private ResponseEntity<ErrorResponse> buildErrorResponse(
+			String message, HttpStatus status, HttpServletRequest request, Map<String, String> validationErrors
+		) {
+		
+		ErrorResponse response = new ErrorResponse(
+				LocalDateTime.now(),
+				status.value(),
+				status.getReasonPhrase(),
+				message,
+				request.getRequestURI(),
+				validationErrors
+		);
+			
+		return ResponseEntity.status(status).body(response);
 	}
 	
-	@ExceptionHandler({ InvalidDateException.class })
-	public ResponseEntity<String> handle( exp) {
-		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(((CustomGlobalException) exp).getMsg());
-	}
-
-	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<ErrorResponse> handle(MethodArgumentNotValidException exp) {
-
-		var errors = new HashMap<String, String>();
-
-		exp.getBindingResult().getAllErrors().forEach(error -> {
-			var fieldName = ((FieldError) error).getField();
-			var errorMessage = error.getDefaultMessage();
-			errors.put(fieldName, errorMessage);
-		});
-
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(errors));
-	}
-
 }

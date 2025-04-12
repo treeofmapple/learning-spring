@@ -1,5 +1,9 @@
 package com.tom.first.management.dto;
 
-public record UserResponse() {
+import java.util.Set;
+
+import com.tom.first.management.model.enums.Profile;
+
+public record UserResponse(String Nome, String Email, Set<Profile> Profiles) {
 
 }

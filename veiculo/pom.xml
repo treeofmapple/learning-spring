@@ -8,24 +8,15 @@
 		<version>3.3.7</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.pogeku.veiculo</groupId>
+	<groupId>com.pogeku.first</groupId>
 	<artifactId>veiculo</artifactId>
-	<version>v1.11b</version>
+	<version>v1</version>
 	<name>veiculo</name>
 	<description>veiculo</description>
-	<url/>
-	<licenses>
-		<license/>
-	</licenses>
-	<developers>
-		<developer/>
-	</developers>
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
+
+
+
+
 	<properties>
 		<java.version>21</java.version>
 	</properties>

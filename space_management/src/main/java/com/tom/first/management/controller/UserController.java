@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tom.first.management.dto.UserRequest;
 import com.tom.first.management.dto.UserResponse;
+import com.tom.first.management.dto.other.NameRequest;
 import com.tom.first.management.service.UserService;
 
 import jakarta.validation.Valid;
