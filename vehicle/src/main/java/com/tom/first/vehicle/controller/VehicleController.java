@@ -1,4 +1,4 @@
-package com.tom.first.establishment.controller;
+package com.tom.first.vehicle.controller;
 
 import java.util.List;
 
@@ -14,47 +14,47 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.tom.first.establishment.dto.EstablishmentRequest;
-import com.tom.first.establishment.dto.EstablishmentResponse;
-import com.tom.first.establishment.dto.EstablishmentUpdate;
-import com.tom.first.establishment.service.EstablishmentService;
+import com.tom.first.vehicle.request.VehicleRequest;
+import com.tom.first.vehicle.request.VehicleResponse;
+import com.tom.first.vehicle.request.VehicleUpdate;
+import com.tom.first.vehicle.service.VehicleService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/v1/establishment")
+@RequestMapping("/v1/vehicle")
 @RequiredArgsConstructor
-public class EstablishmentController {
+public class VehicleController {
 
-	private final EstablishmentService service;
+	private final VehicleService service;
 
 	@GetMapping("/get")
-	public ResponseEntity<List<EstablishmentResponse>> findAll() {
+	public ResponseEntity<List<VehicleResponse>> findAll() {
 		return ResponseEntity.status(HttpStatus.OK).body(service.findAll());
 	}
 
 	@GetMapping("/get/name")
-	public ResponseEntity<EstablishmentResponse> findByName(@RequestParam String name) {
-		return ResponseEntity.status(HttpStatus.OK).body(service.findByName(name));
+	public ResponseEntity<VehicleResponse> findByName(@RequestParam String plate) {
+		return ResponseEntity.status(HttpStatus.OK).body(service.findByPlate(plate));
 	}
 
 	@PostMapping("/create")
-	public ResponseEntity<EstablishmentResponse> createEstablishment(@RequestBody @Valid EstablishmentRequest request) {
-		var establishment = service.createEstablishment(request);
+	public ResponseEntity<VehicleResponse> createVehicle(@RequestBody @Valid VehicleRequest request) {
+		var establishment = service.createVehicle(request);
 		return ResponseEntity.status(HttpStatus.CREATED).body(establishment);
 	}
 
 	@PutMapping("/update")
-	public ResponseEntity<EstablishmentResponse> updateEstablishment(@RequestParam String name,
-			@RequestBody @Valid EstablishmentUpdate request) {
-		var establishment = service.updateEstablishment(name, request);
+	public ResponseEntity<VehicleResponse> updateVehicle(@RequestParam String plate,
+			@RequestBody @Valid VehicleUpdate request) {
+		var establishment = service.updateVehicle(plate, request);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).body(establishment);
 	}
 
 	@DeleteMapping("/delete")
-	public ResponseEntity<String> deleteEstablishment(@PathVariable String name) {
-		service.deleteEstablishment(name);
+	public ResponseEntity<String> deleteVehicle(@PathVariable String plate) {
+		service.deleteVehicle(plate);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Successfull");
 	}
 

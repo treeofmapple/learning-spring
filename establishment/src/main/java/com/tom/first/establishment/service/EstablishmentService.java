@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.tom.first.establishment.common.SystemOperations;
+import com.tom.first.establishment.common.EntityUpdater;
 import com.tom.first.establishment.config.ServiceLogger;
 import com.tom.first.establishment.dto.EstablishmentRequest;
 import com.tom.first.establishment.dto.EstablishmentResponse;
@@ -25,7 +25,7 @@ public class EstablishmentService {
 
 	private final EstablishmentRepository repository;
 	private final EstablishmentMapper mapper;
-	private final SystemOperations system;
+	private final EntityUpdater system;
 
 	public List<EstablishmentResponse> findAll() {
 		ServiceLogger.info("Requesting all establishment data");
