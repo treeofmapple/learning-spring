@@ -1,11 +1,11 @@
 package com.tom.first.establishment.common;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.tom.first.establishment.dto.EstablishmentUpdate;
 import com.tom.first.establishment.model.Establishment;
 
-@Service
+@Component
 public class EntityUpdater {
 
 	public void mergeEstablishment(Establishment place, EstablishmentUpdate request) {
